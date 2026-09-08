@@ -26,7 +26,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 
 	steps, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return 0, "", 0, err
+		return 0, "", 0, fmt.Errorf("invalid steps format: %w", err)
 	}
 	if steps <= 0 {
 		return 0, "", 0, errors.New("steps can't be equal 0 or less")
@@ -34,7 +34,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 
 	walkDuration, err := time.ParseDuration(parts[2])
 	if err != nil {
-		return 0, "", 0, err
+		return 0, "", 0, fmt.Errorf("invalid duration format: %w", err)
 	}
 	if walkDuration <= 0 {
 		return 0, "", 0, errors.New("walk duration can't be equal 0 or less")
@@ -92,7 +92,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 		speed := meanSpeed(steps, height, duration)
 		spentCalories, err := RunningSpentCalories(steps, weight, height, duration)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("failed calculate running spent calories: %w", err)
 		}
 		outputMessage := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 			trainingType, duration.Hours(), distance, speed, spentCalories)
@@ -104,7 +104,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 		speed := meanSpeed(steps, height, duration)
 		spentCalories, err := WalkingSpentCalories(steps, weight, height, duration)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("failed calculate walking spent calories: %w", err)
 		}
 		outputMessage := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 			trainingType, duration.Hours(), distance, speed, spentCalories)
